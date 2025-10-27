@@ -3,7 +3,7 @@
 # Date: [2025-10-18]
 
 # ==============================================================
-# 1. Import raw FASTQ data (Single-end)
+# 1. Import FASTQ data (Merged sequences)
 # ==============================================================
 
 qiime tools import \
