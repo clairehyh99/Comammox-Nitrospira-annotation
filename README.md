@@ -8,10 +8,10 @@ The merged sequences were used in the pipeline for:
 	1.	Data Import and Quality Assessment
 Merged FASTQ files are imported into QIIME 2 and summarized to assess sequence quality. Quality reports are generated to guide the selection of truncation and filtering parameters for downstream analysis.
 	2.	Denoising and ASV Generation (DADA2)
-Raw reads are denoised using the DADA2 algorithm to correct sequencing errors and infer unique ASVs. Outputs include representative sequences, an ASV abundance table, and denoising statistics, which are exported for visualization and further processing.
+Raw reads are denoised using the DADA2 algorithm to correct sequencing errors and infer unique ASVs. Outputs include representative sequences, an ASV abundance table, and denoising statistics.
 	3.	Filtering of Low-Abundance ASVs
 ASVs with fewer than 10 reads are removed to eliminate sequencing noise and rare artifacts. The filtered representative sequences and abundance tables are then re-exported for subsequent analysis.
-	4.	Functional Gene Annotation Using a Custom Database
+	4.	Annotation Using a Custom Database
 A user-defined reference database (FASTA and taxonomy files) is imported and used to train a Naive Bayes classifier. The classifier is then applied to the filtered representative ASVs to assign taxonomic identities, generating an annotated taxonomy table.
 	5.	Taxonomic Classification via VSEARCH
 ASVs are additionally classified using the VSEARCH consensus-based method, employing user-defined identity (0.8) and consensus (0.7) thresholds. Both taxonomic assignments and sequence alignment results are exported for validation.
