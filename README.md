@@ -5,7 +5,6 @@ The aim of this pipeline is to generate amplicon sequence variants (ASVs) of com
 This workflow provides a complete end-to-end QIIME 2 pipeline. The raw data (paired-end sequences) were filtered using fastp v0.19.6 (Chen et al., 2018) and merged with FLASH v1.2.7 (Magoč et al., 2011) as follows. Reads were truncated at positions with an average quality score < 20 over a 50 bp sliding window; truncated reads < 50 bp and reads containing ambiguous characters were discarded. Overlapping sequences longer than 10 bp were assembled with a maximum mismatch ratio of 0.2.
 
 The merged sequences were used in the pipeline for:
-	
 	1.	Data Import and Quality Assessment
 Merged FASTQ files are imported into QIIME 2 and summarized to assess sequence quality. Quality reports are generated to guide the selection of truncation and filtering parameters for downstream analysis.
 	
