@@ -12,7 +12,7 @@ Raw reads are denoised using the DADA2 algorithm to correct sequencing errors an
 	3.	Filtering of Low-Abundance ASVs
 ASVs with fewer than 10 reads are removed to eliminate sequencing noise and rare artifacts. The filtered representative sequences and abundance tables are then re-exported for subsequent analysis.
 	4.	Annotation Using a Custom Database
-A user-defined reference database (FASTA and taxonomy files) is imported and used to train a Naive Bayes classifier. The classifier is then applied to the filtered representative ASVs to assign taxonomic identities, generating an annotated taxonomy table.
+A user-defined reference database (FASTA and taxonomy files) is imported and used for generating an annotated taxonomy table.
 	5.	Taxonomic Classification via VSEARCH
 ASVs are additionally classified using the VSEARCH consensus-based method, employing user-defined identity (0.8) and consensus (0.7) thresholds. Both taxonomic assignments and sequence alignment results are exported for validation.
 	6.	Taxonomic Classification via BLAST
