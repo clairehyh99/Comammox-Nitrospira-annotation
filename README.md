@@ -7,21 +7,21 @@ This workflow provides a complete end-to-end QIIME 2 pipeline. The raw data (pai
 The merged sequences were used in the pipeline for:
 
 1.	Data Import and Quality Assessment, 
-Merged FASTQ files are imported into QIIME 2 and summarized to assess sequence quality. Quality reports are generated to guide the selection of truncation and filtering parameters for downstream analysis.
+merged FASTQ files are imported into QIIME 2 and summarized to assess sequence quality. Quality reports are generated to guide the selection of truncation and filtering parameters for downstream analysis.
 
 2.	Denoising and ASV Generation (DADA2),
-Raw reads are denoised using the DADA2 algorithm to correct sequencing errors and infer unique ASVs. Outputs include representative sequences, an ASV abundance table, and denoising statistics.
+raw reads are denoised using the DADA2 algorithm to correct sequencing errors and infer unique ASVs. Outputs include representative sequences, an ASV abundance table, and denoising statistics.
 	
 3.	Filtering of Low-Abundance ASVs, 
 ASVs with fewer than 10 reads are removed to eliminate sequencing noise and rare artifacts. The filtered representative sequences and abundance tables are then re-exported for subsequent analysis.
 	
 4.	Annotation Using a Custom Database, 
-A user-defined reference database (FASTA and taxonomy files) is imported and used for generating an annotated taxonomy table.
+a user-defined reference database (FASTA and taxonomy files) is imported and used for generating an annotated taxonomy table.
 	
 5.	Taxonomic Classification via VSEARCH, 
 ASVs are additionally classified using the VSEARCH consensus-based method, employing user-defined identity (0.8) and consensus (0.7) thresholds. Both taxonomic assignments and sequence alignment results are exported for validation.
 	
 6.	Taxonomic Classification via BLAST, 
-A BLAST-based consensus classification is performed as a complementary validation step, using the same reference database and parameters as VSEARCH. Results are exported for downstream comparison and curation.
+a BLAST-based consensus classification is performed as a complementary validation step, using the same reference database and parameters as VSEARCH. Results are exported for downstream comparison and curation.
 
 Please see more details in the publication!
