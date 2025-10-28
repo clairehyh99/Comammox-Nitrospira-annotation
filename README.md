@@ -1,4 +1,4 @@
-This script was written by Mengmeng Feng as part of the publication: An optimized workflow for accurate taxonomic annotation of high-throughput comammox Nitrospira sequences.
+This script was written by Mengmeng Feng Yongxin Lin, et al. as part of the publication: An optimized workflow for accurate taxonomic annotation of high-throughput comammox Nitrospira sequences.
 
 The aim of this pipeline is to generate amplicon sequence variants (ASVs) of comammox (complete ammonia oxidizers) amoA genes, enabling an accurate, high-resolution annotation of comammox Nitrospira.
 
