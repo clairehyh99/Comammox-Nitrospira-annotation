@@ -2,19 +2,10 @@
 # Author: Mengmeng Feng et al., 
 # Date: [2025-10-18]
 
-# ==============================================================
-# 1. Import FASTQ data (Merged sequences)
-# ==============================================================
-
+# Import FASTQ data (Merged sequences)
 qiime tools import \
   --type 'SampleData[SequencesWithQuality]' \
   --input-path manifest.tsv \
-  --output-path mjsample.qza \
-  --input-format SingleEndFastqManifestPhred33V2
-
-qiime tools import \
-  --type 'SampleData[SequencesWithQuality]' \
-  --input-path config.txt \
   --output-path mjsample.qza \
   --input-format SingleEndFastqManifestPhred33V2
 
@@ -27,13 +18,7 @@ qiime tools export \
   --input-path mjsample.qzv \
   --output-path mjsample_statistic
 
-# Open "index.html" to inspect the sequence quality distribution.
-# Use this information (e.g., truncation length) to set proper quality control parameters for the next step.
-
-
-# ==============================================================
-# 2. Denoising with DADA2
-# ==============================================================
+# Denoising with DADA2
 
 qiime dada2 denoise-single \
   --i-demultiplexed-seqs mjsample.qza \
@@ -76,10 +61,7 @@ biom convert \
   --table-type "OTU table" \
   --to-tsv
 
-
-# ==============================================================
-# 3. Filter low-abundance ASVs (<10 reads)
-# ==============================================================
+# Filter low-abundance ASVs (<10 reads)
 
 qiime feature-table filter-features \
   --i-table table.qza \
@@ -130,11 +112,9 @@ biom convert \
   --to-tsv
 
 
-# ==============================================================
-# 4. Functional Gene Annotation Using a Custom Reference Database
-# ==============================================================
 
-# Import custom database sequences and taxonomy
+# Functional Gene Annotation Using a Custom Reference Database
+
 qiime tools import \
   --input-path custom_db.fasta \
   --output-path custom_db.qza \
@@ -146,26 +126,7 @@ qiime tools import \
   --type 'FeatureData[Taxonomy]' \
   --input-format TSVTaxonomyFormat
 
-# Train a Naive Bayes classifier
-qiime feature-classifier fit-classifier-naive-bayes \
-  --i-reference-reads custom_db.qza \
-  --i-reference-taxonomy custom_taxonomy.qza \
-  --o-classifier custom_db_classifier.qza
-
-# Classify representative sequences using the trained classifier
-qiime feature-classifier classify-sklearn \
-  --i-classifier custom_db_classifier.qza \
-  --i-reads filtered-rep-seqs.qza \
-  --o-classification taxonomy.qza
-
-qiime tools export \
-  --input-path taxonomy.qza \
-  --output-path exported_taxonomy
-
-
-# ==============================================================
-# 5. Taxonomic Classification Using VSEARCH
-# ==============================================================
+# Taxonomic Classification Using Vsearch
 
 qiime feature-classifier classify-consensus-vsearch \
   --i-query filtered-rep-seqs.qza \
@@ -184,10 +145,7 @@ qiime tools export \
   --input-path vsearch_hits.qza \
   --output-path vsearch_hits_exported
 
-
-# ==============================================================
-# 6. Taxonomic Classification Using BLAST
-# ==============================================================
+# Taxonomic Classification Using BLAST
 
 qiime feature-classifier classify-consensus-blast \
   --i-query filtered-rep-seqs.qza \
