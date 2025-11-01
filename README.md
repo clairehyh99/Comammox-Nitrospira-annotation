@@ -22,15 +22,15 @@ Workflow Summary
 
 1. Quality Filtering and Read Merging
 
-a. Raw paired-end reads are processed using fastp v0.23.2 (Chen et al., 2018) and merged with FLASH v2.2.00 (Magoč et al., 2011) under the following criteria:
+Raw paired-end reads are processed using fastp v0.23.2 (Chen et al., 2018) and merged with FLASH v2.2.00 (Magoč et al., 2011) under the following criteria:
 
-b. Reads are truncated where the average quality score < 20 within a 50 bp sliding window.
+a. Reads are truncated where the average quality score < 20 within a 50 bp sliding window.
 
-c. Truncated reads shorter than 50 bp and reads containing ambiguous bases (N) are discarded.
+b. Truncated reads shorter than 50 bp and reads containing ambiguous bases (N) are discarded.
 
-d. Overlapping sequences longer than 10 bp are merged, allowing a maximum mismatch ratio of 0.2.
+c. Overlapping sequences longer than 10 bp are merged, allowing a maximum mismatch ratio of 0.2.
 
-e. Unmerged reads are discarded.
+d. Unmerged reads are discarded.
 
 Each sample produces a *.merged.fastq.gz file. All operations are parallelized via Slurm (--cpus-per-task 16) with logs written to /path/to/processed.
 
