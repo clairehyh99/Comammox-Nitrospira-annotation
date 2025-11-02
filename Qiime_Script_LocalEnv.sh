@@ -37,7 +37,7 @@ for sample in cutadapt_output/*_R1_trimmed.fastq.gz; do
 
     flash cutadapt_output/${sample_name}_R1_trimmed.fastq.gz \
           cutadapt_output/${sample_name}_R2_trimmed.fastq.gz \
-          -m 1 -x 0.2 \
+          -m 10 -x 0.2 \
           -d flash_output -o ${sample_name}
 
     gzip -c flash_output/${sample_name}.extendedFrags.fastq > flash_output/${sample_name}.extendedFrags.fastq.gz
