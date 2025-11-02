@@ -2,6 +2,50 @@
 # Author: Mengmeng Feng et al., 
 # Date: [2025-10-18]
 
+# fastp: Quality-filtered 
+mkdir -p fastp_output 
+for sample in *_R1.fastq.gz; do
+    sample_name=${sample%_R1.fastq.gz} 
+    echo "Processing $sample_name with fastp..."
+
+    fastp -i ${sample_name}_R1.fastq.gz -I ${sample_name}_R2.fastq.gz \
+          -o fastp_output/${sample_name}_R1_clean.fastq.gz -O fastp_output/${sample_name}_R2_clean.fastq.gz \
+          --cut_right --cut_right_window_size 50 --cut_right_mean_quality 20 \
+          --length_required 50 --n_base_limit 0 \
+          -h fastp_output/${sample_name}_fastp_report.html -j fastp_output/${sample_name}_fastp_report.json \
+          -w 8
+done
+
+# cutadapt: Primer trimming 
+mkdir -p cutadapt_output  
+for sample in fastp_output/*_R1_clean.fastq.gz; do
+    sample_name=$(basename "$sample" _R1_clean.fastq.gz)
+    echo "Trimming fixed length from $sample_name with cutadapt..."
+
+    cutadapt -u 20 -U 20 \
+        -o cutadapt_output/${sample_name}_R1_trimmed.fastq.gz \
+        -p cutadapt_output/${sample_name}_R2_trimmed.fastq.gz \
+        fastp_output/${sample_name}_R1_clean.fastq.gz \
+        fastp_output/${sample_name}_R2_clean.fastq.gz
+done
+
+# FLASH: Merged
+mkdir -p flash_output  
+for sample in cutadapt_output/*_R1_trimmed.fastq.gz; do
+    sample_name=$(basename "$sample" _R1_trimmed.fastq.gz)
+    echo "Merging $sample_name with FLASH..."
+
+    flash cutadapt_output/${sample_name}_R1_trimmed.fastq.gz \
+          cutadapt_output/${sample_name}_R2_trimmed.fastq.gz \
+          -m 1 -x 0.2 \
+          -d flash_output -o ${sample_name}
+
+    gzip -c flash_output/${sample_name}.extendedFrags.fastq > flash_output/${sample_name}.extendedFrags.fastq.gz
+    gzip -c flash_output/${sample_name}.notCombined_1.fastq > flash_output/${sample_name}.notCombined_1.fastq.gz
+    gzip -c flash_output/${sample_name}.notCombined_2.fastq > flash_output/${sample_name}.notCombined_2.fastq.gz
+
+done
+
 # Import FASTQ data (Merged sequences)
 qiime tools import \
   --type 'SampleData[SequencesWithQuality]' \
