@@ -16,7 +16,7 @@ for sample in *_R1.fastq.gz; do
           -w 8
 done
 
-# cutadapt: Primer trimming 
+# cutadapt: Primer trimming (performed with trimming parameters corresponding to the actual primer lengths) 
 mkdir -p cutadapt_output  
 for sample in fastp_output/*_R1_clean.fastq.gz; do
     sample_name=$(basename "$sample" _R1_clean.fastq.gz)
