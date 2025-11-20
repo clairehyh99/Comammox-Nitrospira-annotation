@@ -13,8 +13,8 @@ Software modules
 
 | Tool     | Version | Purpose                                      |
 |-----------|----------|----------------------------------------------|
-| **fastp** | 0.23.2  | Read quality control and trimming             |
-| **FLASH** | 2.2.00  | Paired-end merging                            |
+| **fastp** | 0.23.4  | Read quality control and trimming             |
+| **FLASH** | 1.2.11  | Paired-end merging                            |
 | **QIIME2** | 2022.11 | Denoising, taxonomic annotation, visualization |
 | **GCC**   | 11.3.0  | Base compiler module required by Spartan HPC  |
 
