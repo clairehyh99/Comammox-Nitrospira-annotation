@@ -66,7 +66,8 @@ qiime tools export \
 
 qiime dada2 denoise-single \
   --i-demultiplexed-seqs mjsample.qza \
-  --p-trunc-len 0 \
+  --p-trim-left 20 \
+  --p-trunc-len 200 \
   --o-representative-sequences rep-seqs.qza \
   --o-table table.qza \
   --o-denoising-stats stats-dada2.qza \
