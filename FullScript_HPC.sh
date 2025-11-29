@@ -37,7 +37,7 @@ echo "==> Listing samples from ${RAW_DIR}"
 mapfile -t SAMPLES < <(find "${RAW_DIR}" -maxdepth 1 -type f -name "*.R1.raw.fastq.gz" -printf "%f\n" | awk -F '.' '{print $1}' | sort -V)
 echo "==> Found ${#SAMPLES[@]} samples"
 
-# fastp & FLASH
+# fastp & cutadapt & FLASH
 for s in "${SAMPLES[@]}"; do
   R1="${RAW_DIR}/${s}.CA209F_C576R.R1.raw.fastq.gz"
   R2="${RAW_DIR}/${s}.CA209F_C576R.R2.raw.fastq.gz"
@@ -55,6 +55,15 @@ for s in "${SAMPLES[@]}"; do
     --json "${LOG_DIR}/${s}.fastp.json" \
     > "${LOG_DIR}/${s}.fastp.log" 2>&1
 
+  # Cutadapt: cutadapt fixed-length trimming
+  cutadapt \
+    -u 17 -U 19 \
+    -o "cutadapt_output/${s}.R1.trimmed.fastq.gz" \
+    -p "cutadapt_output/${s}.R2.trimmed.fastq.gz" \
+    "${FP_DIR}/${s}.R1.fq.gz" \
+    "${FP_DIR}/${s}.R2.fq.gz" \
+    > "${LOG_DIR}/${s}.cutadapt.log" 2>&1
+
   # FLASH: min overlap 10, mismatch ratio 0.2
   flash \
     -m 10 \
@@ -62,7 +71,7 @@ for s in "${SAMPLES[@]}"; do
     -t "${THREADS}" \
     -o "${s}" \
     -d "${MG_DIR}" \
-    "${FP_DIR}/${s}.R1.fq.gz" "${FP_DIR}/${s}.R2.fq.gz" \
+    "cutadapt_output/${s}.R1.trimmed.fastq.gz" "cutadapt_output/${s}.R2.trimmed.fastq.gz" \
     > "${LOG_DIR}/${s}.flash.log" 2>&1
 
   if [[ -s "${MG_DIR}/${s}.extendedFrags.fastq" ]]; then
