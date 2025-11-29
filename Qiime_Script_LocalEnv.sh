@@ -22,7 +22,7 @@ for sample in fastp_output/*_R1_clean.fastq.gz; do
     sample_name=$(basename "$sample" _R1_clean.fastq.gz)
     echo "Trimming fixed length from $sample_name with cutadapt..."
 
-    cutadapt -u 20 -U 20 \
+    cutadapt -u 17 -U 19 \
         -o cutadapt_output/${sample_name}_R1_trimmed.fastq.gz \
         -p cutadapt_output/${sample_name}_R2_trimmed.fastq.gz \
         fastp_output/${sample_name}_R1_clean.fastq.gz \
