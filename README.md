@@ -1,108 +1,168 @@
-This pipeline provides a complete, end-to-end QIIME 2 workflow for the analysis of comammox Nitrospira amoA gene amplicons on the Spartan HPC environment.
-It automates all steps from raw paired-end FASTQ files to quality-filtered, denoised ASVs and custom database–based taxonomy assignments, enabling reproducible, high-resolution annotation of comammox Nitrospira sequences.
-The goal of this workflow is to produce amplicon sequence variants (ASVs) for comammox Nitrospira amoA genes with high accuracy and taxonomic precision, following an optimized version of the workflow published in:
-Feng M., Lin Y., et al. (2025). “An optimized workflow for accurate taxonomic annotation of high-throughput comammox Nitrospira sequences.” (update the doi etc later)
+# Comammox *Nitrospira* amoA Amplicon Analysis Pipeline  
+### Local QIIME 2 Wrapper Script (FASTQ → DADA2 → Filter → Custom Annotation)
 
-Execution Environment
+This repository provides a complete **local workstation pipeline** for high-resolution analysis of *comammox Nitrospira* **amoA** gene amplicons.
 
-This pipeline is implemented as a single Slurm batch script compatible with the Spartan HPC system.
+The pipeline automates all steps from **raw paired-end FASTQ** files to **denoised ASVs** and **custom database–based taxonomic annotation**, following an optimized workflow described in:
 
-All stages (pre-processing and QIIME 2 processing) are run sequentially within one job.
+> **Feng M., Lin Y., et al. (2025)**.  
+> *An optimized workflow for accurate taxonomic annotation of high-throughput comammox Nitrospira amoA sequences.*  
+> *(DOI coming soon)*
 
-Software modules
+---
 
-| Tool     | Version | Purpose                                      |
-|-----------|----------|----------------------------------------------|
-| **fastp** | 0.23.4  | Read quality control and trimming             |
-| **FLASH** | 1.2.11  | Paired-end merging                            |
-| **QIIME2** | 2022.11 | Denoising, taxonomic annotation, visualization |
-| **GCC**   | 11.3.0  | Base compiler module required by Spartan HPC  |
+# 🧭 Table of Contents
+- [Overview](#overview)
+- [Execution Environment](#execution-environment)
+- [Input Requirements](#input-requirements)
+- [Usage](#usage)
+- [Workflow Summary](#workflow-summary)
+- [Output Structure](#output-structure)
+- [Pipeline Flowchart](#pipeline-flowchart)
+- [References](#references)
+
+---
+
+# Overview
+
+This pipeline is implemented as a single Bash wrapper:
+
+Two modes are supported:
+
+| Mode | Description |
+|------|-------------|
+| `full` | Run complete workflow from raw FASTQ → ASVs → annotation |
+| `annot` | Only annotation on existing `filtered-rep-seqs.qza` |
+
+All steps run **locally**, no HPC/Slurm required.
+
+---
+
+# Execution Environment
+
+Recommended conda setup:
+
+```bash
+conda create -n qiime2-amplicon-2024.5 python=3.10
+conda activate qiime2-amplicon-2024.5
+mamba install fastp cutadapt flash biom-format
+
+Required software
+| Tool            | Purpose                 | Link                                                                     |
+| --------------- | ----------------------- | ------------------------------------------------------------------------ |
+| **QIIME 2**     | ASV inference, taxonomy | [https://qiime2.org](https://qiime2.org)                                 |
+| **fastp**       | FASTQ QC                | [https://github.com/OpenGene/fastp](https://github.com/OpenGene/fastp)   |
+| **cutadapt**    | Primer trimming         | [https://cutadapt.readthedocs.io](https://cutadapt.readthedocs.io)       |
+| **FLASH**       | Paired-end merging      | [https://ccb.jhu.edu/software/FLASH](https://ccb.jhu.edu/software/FLASH) |
+| **biom-format** | OTU table conversion    | [https://biom-format.org](https://biom-format.org)                       |
+
+Input requirements
+
+project/
+├── raw_fastq/
+│   ├── F1.CA209F_C576R.R1.raw.fastq.gz
+│   ├── F1.CA209F_C576R.R2.raw.fastq.gz
+│   └── ...
+├── comammox_db.fasta
+├── comammox_tax.txt
+├── sample_metadata.tsv   (optional)
+└── Wrap_up_FASTQ-DADA2-FILTER-ANNOTATION.sh
+
+FASTQ file naming pattern:
+<sample>.CA209F_C576R.R1.raw.fastq.gz
+<sample>.CA209F_C576R.R2.raw.fastq.gz
+
+Custom DB format:
+
+Feature ID    Taxon
+CMX_001       k__Bacteria; p__Nitrospirota; c__Nitrospiria; ...
+CMX_002       k__Bacteria; p__Nitrospirota; ...
+
+Usage
+# Entire pipeline
+bash Wrap_up_FASTQ-DADA2-FILTER-ANNOTATION.sh full \
+  --raw-dir ./raw_fastq \
+  --outdir ./out_amplicon \
+  --sample-tsv sample_metadata.tsv \
+  --custom-db-fasta comammox_db.fasta \
+  --custom-db-tax comammox_tax.txt \
+  --threads 8
+
+# Annotation only
+bash Wrap_up_FASTQ-DADA2-FILTER-ANNOTATION.sh annot \
+  --repseq-qza out_amplicon/04_qiime2/filtered-rep-seqs.qza \
+  --annot-outdir out_amplicon/04_qiime2/comammox_annotation \
+  --custom-db-fasta comammox_db.fasta \
+  --custom-db-tax comammox_tax.txt
 
 Workflow Summary
+1. fastp quality filtering (50 bp window, Q < 20)
 
-1. Quality Filtering and Read Merging
+Removes low-quality reads, N-containing reads, short fragments.
 
-Raw paired-end reads are processed using fastp v0.23.2 (Chen et al., 2018) and merged with FLASH v2.2.00 (Magoč et al., 2011) under the following criteria:
+2. cutadapt trimming
 
-a. Reads are truncated where the average quality score < 20 within a 50 bp sliding window.
+Removes fixed-length primer sequence (17 bp / 19 bp).
 
-b. Truncated reads shorter than 50 bp and reads containing ambiguous bases (N) are discarded.
+3. FLASH merging
 
-c. Overlapping sequences longer than 10 bp are merged, allowing a maximum mismatch ratio of 0.2.
+Minimum overlap: 10 bp
 
-d. Unmerged reads are discarded.
+Mismatch ratio: 0.2
 
-Each sample produces a *.merged.fastq.gz file. All operations are parallelized via Slurm (--cpus-per-task 16) with logs written to /path/to/processed.
+Output: *.merged.fastq.gz
 
-2. Data Import and Quality Assessment
+4. QIIME2 import
 
-a. Merged single-end FASTQ files are automatically detected and converted into a QIIME 2 manifest.
+Auto-generates manifest with absolute paths.
 
-b. Sequences are imported as SampleData[SequencesWithQuality] and summarized (demux summarize) to generate per-sample quality profiles.
+5. DADA2 (single-end)
 
-3. Denoising and ASV Generation (DADA2)
+Produces:
 
-Merged reads are denoised using the DADA2 algorithm within QIIME 2 to correct sequencing errors and infer unique ASVs. outputs include Representative ASV sequences (rep-seqs.qza), Feature table of ASV abundances (table.qza) and Denoising statistics (stats-dada2.qza)
+rep-seqs.qza
 
-4. Filtering of Low-Abundance ASVs
+table.qza
 
-ASVs with fewer than 10 total reads are removed to eliminate sequencing noise and rare artifacts.
+dada2_stats.qza
 
-Filtered representative sequences (filtered-rep-seqs.qza) and tables (filtered_table.qza) are retained for downstream analysis.
+6. Filter ASVs (min frequency ≥ 10)
 
-5. Custom Database Annotation
+Outputs:
 
-User-defined reference FASTA and taxonomy files are imported into QIIME2:
+filtered-rep-seqs.qza
 
-custom_db.fasta → FeatureData[Sequence]
+filtered_table.qza
 
-custom_taxonomy.txt → FeatureData[Taxonomy] (TSV Taxonomy Format)
+7. Custom comammox annotation
 
-6. Taxonomic Classification
+Two classifiers:
 
-Two complementary methods are used:
+Method	Thresholds
+VSEARCH	identity ≥ 0.8, consensus ≥ 0.7
+BLAST	identity ≥ 0.8, consensus ≥ 0.7
 
-VSEARCH consensus classifier
-Identity threshold: 0.8
-Consensus threshold: 0.7
-Outputs: taxonomy_vsearch.qza, vsearch_hits.qza
+Exports TSV tables for curating comammox clades.
 
-BLAST consensus classifier
-Same parameters for independent validation
-Outputs: taxonomy_blast.qza, blast_hits.qza
-
-Both methods produce exported taxonomic tables and hit summaries for downstream curation.
-
-7. Export outputs
-
-The script automatically exports:
-
-ASV abundance tables (feature-table.biom, TSV converted)
-
-Representative sequences (FASTA)
-
-DADA2 statistics and visualizations (.qzv)
-
-VSEARCH / BLAST taxonomy results
-
-Intermediate and final filtered feature tables
-
-All outputs are stored under:
-processed/01_fastp/
-processed/02_merged/
-processed/03_qiime2/
-processed/logs/
-
-Output summary
-
-| Category          | Example Output                         | Description                                       |
-|-------------------|-----------------------------------------|---------------------------------------------------|
-| **Quality control** | `*.fastp.html`, `*.flash.log`          | Per-sample quality filtering and merging reports   |
-| **QIIME2 data**     | `mjsample.qza`, `mjsample.qzv`         | Imported merged reads and quality summaries        |
-| **DADA2 results**   | `rep-seqs.qza`, `table.qza`, `stats-dada2.qza` | Denoised ASVs, abundance table, and statistics  |
-| **Filtered data**   | `filtered_table.qza`, `filtered-rep-seqs.qza` | ASVs retained after minimum read threshold filtering |
-| **Taxonomy**        | `taxonomy_vsearch.qza`, `taxonomy_blast.qza` | Classifications via custom reference database     |
-| **Exports**         | `asv_table.txt`, `filtered_asv_table.txt` | TSV-format abundance tables for downstream analysis |
+📂 Output Structure
+out_amplicon/
+├── 01_fastp/
+├── 02_cutadapt/
+├── 03_merged/
+└── 04_qiime2/
+    ├── manifest.tsv
+    ├── mjsample.qza
+    ├── rep-seqs.qza
+    ├── table.qza
+    ├── dada2_stats.qza
+    ├── filtered-rep-seqs.qza
+    ├── filtered_table.qza
+    ├── filtered_asv_table.txt
+    └── comammox_annotation/
+        ├── taxonomy_vsearch.qza
+        ├── taxonomy_vsearch_exported/
+        ├── taxonomy_blast.qza
+        └── taxonomy_blast_exported/
 
 Citation: 
 
