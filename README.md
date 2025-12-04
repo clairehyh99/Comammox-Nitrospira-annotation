@@ -23,7 +23,6 @@ Two modes are supported:
 | `full` | Run complete workflow from raw FASTQ → ASVs → annotation |
 | `annot` | Only annotation on existing `filtered-rep-seqs.qza` |
 
-All steps run **locally**, no HPC/Slurm required.
 
 ---
 
