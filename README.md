@@ -11,17 +11,6 @@ The pipeline automates all steps from **raw paired-end FASTQ** files to **denois
 
 ---
 
-# 🧭 Table of Contents
-- [Overview](#overview)
-- [Execution Environment](#execution-environment)
-- [Input Requirements](#input-requirements)
-- [Usage](#usage)
-- [Workflow Summary](#workflow-summary)
-- [Output Structure](#output-structure)
-- [Pipeline Flowchart](#pipeline-flowchart)
-- [References](#references)
-
----
 
 # Overview
 
