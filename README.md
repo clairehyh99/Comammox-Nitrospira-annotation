@@ -63,8 +63,8 @@ FASTQ file naming pattern:
 Custom DB format:
 
 Feature ID    Taxon
-CMX_001       k__Bacteria; p__Nitrospirota; c__Nitrospiria; ...
-CMX_002       k__Bacteria; p__Nitrospirota; ...
+CUS38424       A; A.1
+MH444516       A; A.2
 
 Usage
 # Entire pipeline
@@ -104,7 +104,7 @@ Output: *.merged.fastq.gz
 
 Auto-generates manifest with absolute paths.
 
-5. DADA2 (single-end)
+5. DADA2
 
 Produces:
 
