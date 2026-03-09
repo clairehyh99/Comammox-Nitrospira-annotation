@@ -3,8 +3,8 @@ set -e
 
 # =====================================================================
 # One-Click Wrapper Script for Comammox Representative Sequence Annotation 
-# Author: Mengmeng Feng et al.
-# Date: [2025-10-18]
+# Author names and affiliations have been removed for double-anonymous peer review. 
+# Date: [2026-3-9]
 #
 # This script performs:
 #   1. Importing the custom comammox amoA reference database
