@@ -1,5 +1,5 @@
 # QIIME 2 Workflow Script for Amplicon Data Processing and Custom Database Classification
-# Author: Mengmeng Feng et al., 
+# Author and affiliation anonymized for peer review
 # Date: [2025-10-18]
 
 # fastp: Quality-filtered 
