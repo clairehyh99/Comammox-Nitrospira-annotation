@@ -6,7 +6,6 @@ This repository provides a complete **local workstation pipeline** for high-reso
 The pipeline automates all steps from **raw paired-end FASTQ** files to **denoised ASVs** and **custom database–based taxonomic annotation**, following an optimized workflow described in the associated study (manuscript under review).
 
 
-> **Author names and affiliations have been removed for double-anonymous peer review. **.  
 > *An optimized workflow for accurate taxonomic annotation of high-throughput comammox Nitrospira amoA sequences.*  
 > *(DOI coming soon)*
 
