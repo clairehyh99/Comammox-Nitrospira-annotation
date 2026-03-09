@@ -1,6 +1,6 @@
 # QIIME 2 Workflow Script for Amplicon Data Processing and Custom Database Classification
 # Author and affiliation anonymized for peer review
-# Date: [2025-10-18]
+# Date: [2026-3-9]
 
 # fastp: Quality-filtered 
 mkdir -p fastp_output 
