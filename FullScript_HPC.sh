@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-#SBATCH --partition=sapphire
+#SBATCH --partition=YOUR_PARTITION   # replace with your HPC partition name
 #SBATCH --nodes=1
 #SBATCH --job-name=amplicon_qiime2
-#SBATCH --account=punim2429
+#SBATCH --account=YOUR_ACCOUNT       # replace with your HPC project account
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=50G
