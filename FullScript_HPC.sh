@@ -114,8 +114,8 @@ qiime tools export \
 # DADA2 (denoise-single on merged reads)
 qiime dada2 denoise-single \
   --i-demultiplexed-seqs "${Q2_DIR}/mjsample.qza" \
-  --p-trim-left 20 \
-  --p-trunc-len 200 \
+  --p-trim-left 0 \
+  --p-trunc-len 0 \
   --o-representative-sequences "${Q2_DIR}/rep-seqs.qza" \
   --o-table "${Q2_DIR}/table.qza" \
   --o-denoising-stats "${Q2_DIR}/stats-dada2.qza" \
