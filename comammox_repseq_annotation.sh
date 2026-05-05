@@ -4,7 +4,7 @@ set -e
 # =====================================================================
 # One-Click Wrapper Script for Comammox Representative Sequence Annotation 
 # Author names and affiliations have been removed for double-anonymous peer review. 
-# Date: [2026-3-9]
+# Date: [2026-5-5]
 #
 # This script performs:
 #   1. Importing the custom comammox amoA reference database
